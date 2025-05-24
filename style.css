@@ -80,3 +80,8 @@ img {
 .select-container {
     display: flex;
 }
+
+.msg {
+        height: 1.5rem;
+    background-color: #FCFBEB
+}

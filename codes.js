@@ -159,41 +159,61 @@ const countryList = {
   ZMK: 'ZM',
   ZWD: 'ZW'
 }
+let apiUrl = 'https://latest.currency-api.pages.dev/v1/currencies/usd.json'
+defaultText()
 let selectCont = document.querySelectorAll('.select-container select')
 for (select of selectCont) {
-  for (Currcodes in countryList)
-    {
-    const newOpt = document.createElement('option')
+  for (Currcodes in countryList) {
+    let newOpt = document.createElement('option')
     newOpt.value = Currcodes
     newOpt.innerText = Currcodes
+    newOpt.classList.add('myoption')
     select.append(newOpt)
-    if (select.name === "from" && Currcodes==="USD") {
-        newOpt.selected = true
-
+    if (select.name === 'from' && Currcodes === 'USD') {
+      newOpt.selected = true
     }
-    if (select.name === "to" && Currcodes==="INR") {
-        newOpt.selected = true
-
+    if (select.name === 'to' && Currcodes === 'INR') {
+      newOpt.selected = true
     }
   }
 }
 
-
 for (select of selectCont) {
-    select.addEventListener("change",changeFlag)
-
-
+  select.addEventListener('change', changeFlag)
+}
+let imgFrom = document.querySelector('.from-img')
+function changeFlag (event) {
+  const select = event.target
+  const currencyCode = select.value
+  const img = select.parentElement.querySelector('img')
+  const countryCode = countryList[currencyCode]
+  img.src = `https://flagsapi.com/${countryCode}/flat/64.png`
 }
 
- let imgFrom  = document.querySelector(".from-img")
-    function changeFlag(event) {
-        const select = event.target;
-        const currencyCode=select.value;
-        const img = select.parentElement.querySelector("img")
-        const countryCode = countryList[currencyCode]
-        img.src= `https://flagsapi.com/${countryCode}/flat/64.png`;
-    }
+const btn = document.querySelector('button')
+btn.addEventListener('click', async evt => {
+  evt.preventDefault()
+  let JSamount = document.querySelector('#amount').value
+  if (JSamount < 1 || JSamount === 0) {
+    document.querySelector('#amount').value = 1
+  } else {
+    let fromValue = document.querySelector('#from').value
+    let toValue = document.querySelector('#to').value
+    let reqMaro = await fetch(apiUrl)
+    let newRes = await reqMaro.json()
+    let fromCurrencyRate = newRes.usd[fromValue.toLowerCase()]
+    let toCurrencyRate = newRes.usd[toValue.toLowerCase()]
+    let Converterresult = (JSamount / fromCurrencyRate) * toCurrencyRate
+    const JSmsg = document.querySelector('.msg')
+    JSmsg.innerText = `${Converterresult} ${toValue}`
+  }
+})
 
-
-
-
+async function defaultText () {
+  const msg = document.querySelector('.msg')
+  let Maro = await fetch(
+    'https://latest.currency-api.pages.dev/v1/currencies/usd.json'
+  )
+  let Res = await Maro.json()
+  msg.innerText = `1 USD = ${Res.usd.inr}`
+}
