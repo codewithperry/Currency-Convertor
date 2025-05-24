@@ -215,5 +215,5 @@ async function defaultText () {
     'https://latest.currency-api.pages.dev/v1/currencies/usd.json'
   )
   let Res = await Maro.json()
-  msg.innerText = `1 USD = ${Res.usd.inr}`
+  msg.innerText = `1 USD = ${Res.usd.inr} INR`
 }
